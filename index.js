@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path'); // Tambahkan module path bawaan Node.js
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -7,13 +8,11 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Middleware agar folder images bisa diakses secara publik via URL
-app.use('/images', express.static('images'));
+// PENTING: Gunakan path.join agar terbaca tepat di OS Linux (Render)
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// Domain URL Render milikmu
 const BASE_URL = 'https://coffe-api-mtxp.onrender.com';
 
-// Data Kopi (disesuaikan dengan file CSV & nama file di folder images)
 const coffees = [
   {
     coffee_id: 1,
@@ -87,17 +86,14 @@ const coffees = [
   }
 ];
 
-// Route dasar
 app.get('/', (req, res) => {
   res.send('API Kopi Aktif!');
 });
 
-// Endpoint GET semua data kopi
 app.get('/api/coffees', (req, res) => {
   res.json(coffees);
 });
 
-// Jalankan server
 app.listen(PORT, () => {
   console.log(`Server berjalan di port ${PORT}`);
 });
